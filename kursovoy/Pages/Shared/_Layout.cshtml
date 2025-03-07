@@ -1,4 +1,8 @@
-﻿<!DOCTYPE html>
+﻿@using kursovoy.Models
+@using Newtonsoft.Json
+@using System.IO
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -14,17 +18,42 @@
             <div class="container">
                 <a class="navbar-brand" asp-area="" asp-page="/Index">kursovoy</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+                aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
+                            <a class="nav-link text-dark" asp-area="" asp-page="/Store/Index">Магазин</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
+                            <a class="nav-link text-dark" asp-area="" asp-page="/Library/Index">Библиотека</a>
                         </li>
+                    </ul>
+                    <ul class="navbar-nav">
+                        @if (string.IsNullOrEmpty(Context.Session.GetString("Username")))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-page="/Account/Login">Войти</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-page="/Account/Register">Регистрация</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    @Context.Session.GetString("Username")
+                                    <span class="badge bg-success">Баланс: @GetUserBalance(Context) руб.</span>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                    <li><a class="dropdown-item" asp-area="" asp-page="/Account/AddBalance">Пополнить баланс</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" asp-area="" asp-page="/Account/Logout">Выйти</a></li>
+                                </ul>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>
@@ -45,7 +74,27 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
+
+@functions {
+    private decimal GetUserBalance(HttpContext context)
+    {
+        var username = context.Session.GetString("Username");
+        if (string.IsNullOrEmpty(username))
+        {
+            return 0;
+        }
+
+
+        var usersFilePath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "json", "users.json");
+        var users = JsonConvert.DeserializeObject<List<User>>(System.IO.File.ReadAllText(usersFilePath));
+
+        var user = users.FirstOrDefault(u => u.Username == username);
+        return user?.Balance ?? 0;
+    }
+}

@@ -1,0 +1,13 @@
+﻿@page
+@model kursovoy.Pages.Account.RegisterModel
+@{
+    ViewData["Title"] = "Регистрация";
+}
+
+<h2>Регистрация</h2>
+<form method="post">
+    <input type="text" name="username" placeholder="Логин" required />
+    <input type="password" name="password" placeholder="Пароль" required />
+    <input type="email" name="email" placeholder="Email" required />
+    <button type="submit">Зарегистрироваться</button>
+</form>

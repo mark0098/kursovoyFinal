@@ -1,0 +1,54 @@
+﻿@page
+@model kursovoy.Pages.Library.IndexModel
+@{
+    ViewData["Title"] = "Библиотека";
+}
+
+<div class="container">
+    <h1 class="text-center mb-4">Библиотека</h1>
+
+    @if (Model.PurchasedGames == null || !Model.PurchasedGames.Any())
+    {
+        <div class="alert alert-info">
+            У вас пока нет купленных игр.
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            @foreach (var game in Model.PurchasedGames)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 shadow">
+                        <img src="@game.CoverImage" class="card-img-top" alt="@game.Title">
+                        <div class="card-body">
+                            <h5 class="card-title">@game.Title</h5>
+                            <p class="card-text">@game.Description</p>
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#keyModal-@game.Id">
+                                Показать ключ
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Модальное окно для отображения ключа -->
+                <div class="modal fade" id="keyModal-@game.Id" tabindex="-1" aria-labelledby="keyModalLabel-@game.Id" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="keyModalLabel-@game.Id">Ключ для @game.Title</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                @Model.GetGameKey(game.Id)
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

@@ -1,0 +1,26 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Магазин";
+}
+
+<div class="container">
+    <h1 class="text-center mb-4">Магазин игр</h1>
+
+    <div class="row">
+        @foreach (var game in Model.Games)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow">
+                    <img src="@game.CoverImage" class="card-img-top" alt="@game.Title">
+                    <div class="card-body">
+                        <h5 class="card-title">@game.Title</h5>
+                        <p class="card-text">@game.Description</p>
+                        <p class="text-muted">@game.Price руб.</p>
+                        <a href="/Store/Game/@game.Id" class="btn btn-primary">Подробнее</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

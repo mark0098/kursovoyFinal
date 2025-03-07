@@ -1,0 +1,38 @@
+﻿@page
+@model kursovoy.Pages.Admin.GamesModel
+@{
+    ViewData["Title"] = "Управление играми";
+}
+
+<div class="container">
+    <h1 class="text-center mb-4">Управление играми</h1>
+
+    <a href="/Admin/AddGame" class="btn btn-success mb-3">Добавить игру</a>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Название</th>
+                <th>Цена</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var game in Model.Games)
+            {
+                <tr>
+                    <td>@game.Id</td>
+                    <td>@game.Title</td>
+                    <td>@game.Price руб.</td>
+                    <td>
+                        <a href="/Admin/EditGame/@game.Id" class="btn btn-warning">Редактировать</a>
+                        <form method="post" asp-page-handler="Delete" asp-route-id="@game.Id" class="d-inline">
+                            <button type="submit" class="btn btn-danger">Удалить</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

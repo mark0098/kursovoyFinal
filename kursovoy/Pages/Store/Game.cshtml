@@ -1,0 +1,65 @@
+﻿@page "{id:int}"
+@model kursovoy.Pages.Store.GameModel
+@{
+    ViewData["Title"] = Model.Game?.Title ?? "Игра не найдена";
+}
+
+@if (Model.Game == null)
+{
+    <div class="alert alert-danger">
+        Игра не найдена.
+    </div>
+}
+else
+{
+    <div class="container">
+        <h1 class="text-center mb-4">@Model.Game.Title</h1>
+
+        <div class="row">
+            <div class="col-md-8">
+                <div class="mb-4">
+                    <h3>Описание</h3>
+                    <p>@Model.Game.Description</p>
+                </div>
+
+                <div class="mb-4">
+                    <h3>Системные требования</h3>
+                    <p>@Model.Game.SystemRequirements</p>
+                </div>
+
+                <div class="mb-4">
+                    <h3>Скриншоты</h3>
+                    <div class="row">
+                        @foreach (var screenshot in Model.Game.Screenshots)
+                        {
+                            <div class="col-md-6 mb-3">
+                                <img src="@screenshot" class="img-fluid rounded shadow" alt="Скриншот">
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card shadow">
+                    <img src="@Model.Game.CoverImage" class="card-img-top" alt="@Model.Game.Title">
+                    <div class="card-body">
+                        <h5 class="card-title">@Model.Game.Title</h5>
+                        <p class="card-text">@Model.Game.Price руб.</p>
+
+                        @if (Model.IsPurchased)
+                        {
+                            <a href="/Library" class="btn btn-success w-100">В библиотеку</a>
+                        }
+                        else
+                        {
+                            <form method="post">
+                                <button type="submit" class="btn btn-primary w-100">Купить</button>
+                            </form>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

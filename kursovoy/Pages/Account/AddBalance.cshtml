@@ -1,0 +1,53 @@
+﻿@page
+@model kursovoy.Pages.Account.AddBalanceModel
+@{
+    ViewData["Title"] = "Пополнить баланс";
+}
+
+<div class="container">
+    <h1 class="text-center mb-4">Пополнить баланс</h1>
+
+    <form method="post">
+        <div class="form-group">
+            <label for="amount">Сумма пополнения (руб.):</label>
+            <input type="number" class="form-control" id="amount" name="amount" required min="1" />
+        </div>
+
+        <div class="form-group">
+            <label for="cardNumber">Номер карты:</label>
+            <input type="text" class="form-control" id="cardNumber" name="cardNumber" required placeholder="0000 0000 0000 0000" />
+        </div>
+
+        <div class="form-group">
+            <label for="expiryDate">Срок действия:</label>
+            <input type="text" class="form-control" id="expiryDate" name="expiryDate" required placeholder="MM/YY" />
+        </div>
+
+        <div class="form-group">
+            <label for="cvv">CVV:</label>
+            <input type="text" class="form-control" id="cvv" name="cvv" required placeholder="123" />
+        </div>
+
+        <div class="form-group form-check">
+            <input type="checkbox" class="form-check-input" id="saveCard" name="saveCard" />
+            <label class="form-check-label" for="saveCard">Сохранить данные карты</label>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Оплатить</button>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Маска для номера карты (16 цифр с пробелами каждые 4 цифры)
+            $('#cardNumber').mask('0000 0000 0000 0000');
+
+            // Маска для срока действия (MM/YY)
+            $('#expiryDate').mask('00/00');
+
+            // Маска для CVV (3 цифры)
+            $('#cvv').mask('000');
+        });
+    </script>
+}

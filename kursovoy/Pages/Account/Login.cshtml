@@ -1,0 +1,15 @@
+﻿@page
+@model kursovoy.Pages.Account.LoginModel
+@{
+    ViewData["Title"] = "Авторизация";
+}
+
+<h2>Авторизация</h2>
+<form method="post">
+    <input type="text" name="username" placeholder="Логин" required />
+    <input type="password" name="password" placeholder="Пароль" required />
+    <button type="submit">Войти</button>
+</form>
+
+<h2>Регистрация</h2>
+<a href="/Account/Register">Зарегистрироваться</a>
