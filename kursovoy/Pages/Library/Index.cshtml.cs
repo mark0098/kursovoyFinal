@@ -22,13 +22,10 @@ namespace kursovoy.Pages.Library
                 return RedirectToPage("/Account/Login");
             }
 
-            // Загружаем список покупок
             var purchases = JsonConvert.DeserializeObject<List<Purchase>>(System.IO.File.ReadAllText(_purchasesFilePath));
 
-            // Загружаем список игр
             var games = JsonConvert.DeserializeObject<List<Game>>(System.IO.File.ReadAllText(_gamesFilePath));
 
-            // Получаем ID текущего пользователя
             var users = JsonConvert.DeserializeObject<List<User>>(System.IO.File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "json", "users.json")));
             var user = users.FirstOrDefault(u => u.Username == username);
 
@@ -37,7 +34,6 @@ namespace kursovoy.Pages.Library
                 return RedirectToPage("/Account/Login");
             }
 
-            // Находим купленные игры пользователя
             var purchasedGameIds = purchases
                 .Where(p => p.UserId == user.Id)
                 .Select(p => p.GameId)
@@ -47,7 +43,6 @@ namespace kursovoy.Pages.Library
                 .Where(g => purchasedGameIds.Contains(g.Id))
                 .ToList();
 
-            // Загружаем ключи для игр
             var gameKeys = JsonConvert.DeserializeObject<List<GameKey>>(System.IO.File.ReadAllText(_gameKeysFilePath));
             foreach (var key in gameKeys.Where(k => k.UserId == user.Id))
             {

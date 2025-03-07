@@ -5,10 +5,8 @@ using Microsoft.Extensions.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Добавляем поддержку Razor Pages
 builder.Services.AddRazorPages();
 
-// Добавляем поддержку сессий
 builder.Services.AddSession();
 
 var app = builder.Build();
@@ -24,10 +22,8 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthorization();
 
-// Включаем поддержку сессий
 app.UseSession();
 
-// Настройка маршрутизации
 app.MapRazorPages();
 
 app.Run();

@@ -7,29 +7,30 @@
 <div class="container">
     <h1 class="text-center mb-4">Пополнить баланс</h1>
 
-    <form method="post">
+    <form method="post" onsubmit="return validateExpiryDate()">
         <div class="form-group">
             <label for="amount">Сумма пополнения (руб.):</label>
-            <input type="number" class="form-control" id="amount" name="amount" required min="1" />
+            <input type="number" class="form-control" id="amount" name="Amount" required min="1" />
         </div>
 
         <div class="form-group">
             <label for="cardNumber">Номер карты:</label>
-            <input type="text" class="form-control" id="cardNumber" name="cardNumber" required placeholder="0000 0000 0000 0000" />
+            <input type="text" class="form-control" id="cardNumber" name="CardNumber" required placeholder="0000 0000 0000 0000" />
         </div>
 
         <div class="form-group">
             <label for="expiryDate">Срок действия:</label>
-            <input type="text" class="form-control" id="expiryDate" name="expiryDate" required placeholder="MM/YY" />
+            <input type="text" class="form-control" id="expiryDate" name="ExpiryDate" required placeholder="MM/YY" />
+            <small id="expiryDateError" class="text-danger" style="display: none;">Срок действия карты истек или введен некорректно.</small>
         </div>
 
         <div class="form-group">
             <label for="cvv">CVV:</label>
-            <input type="text" class="form-control" id="cvv" name="cvv" required placeholder="123" />
+            <input type="text" class="form-control" id="cvv" name="Cvv" required placeholder="123" />
         </div>
 
         <div class="form-group form-check">
-            <input type="checkbox" class="form-check-input" id="saveCard" name="saveCard" />
+            <input type="checkbox" class="form-check-input" id="saveCard" name="SaveCard" />
             <label class="form-check-label" for="saveCard">Сохранить данные карты</label>
         </div>
 
@@ -40,14 +41,30 @@
 @section Scripts {
     <script>
         $(document).ready(function () {
-            // Маска для номера карты (16 цифр с пробелами каждые 4 цифры)
             $('#cardNumber').mask('0000 0000 0000 0000');
 
-            // Маска для срока действия (MM/YY)
             $('#expiryDate').mask('00/00');
 
-            // Маска для CVV (3 цифры)
             $('#cvv').mask('000');
         });
+
+        function validateExpiryDate() {
+            const expiryDateInput = document.getElementById('expiryDate').value;
+            const errorElement = document.getElementById('expiryDateError');
+
+            const [month, year] = expiryDateInput.split('/').map(Number);
+
+            const currentDate = new Date();
+            const currentYear = currentDate.getFullYear() % 100;
+            const currentMonth = currentDate.getMonth() + 1;
+
+            if (year < currentYear || (year === currentYear && month < currentMonth)) {
+                errorElement.style.display = 'block';
+                return false;
+            }
+
+            errorElement.style.display = 'none';
+            return true;
+        }
     </script>
 }

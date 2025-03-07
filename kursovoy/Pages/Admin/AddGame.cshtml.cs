@@ -43,16 +43,12 @@ namespace kursovoy.Pages.Admin
                 return Page();
             }
 
-            // Загружаем список игр
             var games = JsonConvert.DeserializeObject<List<Game>>(System.IO.File.ReadAllText(_gamesFilePath)) ?? new List<Game>();
 
-            // Генерируем уникальный ID для новой игры
             var newGameId = games.Any() ? games.Max(g => g.Id) + 1 : 1;
 
-            // Сохраняем обложку игры
             var coverImagePath = SaveImage(CoverImage, "covers");
 
-            // Сохраняем скриншоты игры
             var screenshotsPaths = new List<string>();
             if (Screenshots != null && Screenshots.Any())
             {
@@ -63,7 +59,6 @@ namespace kursovoy.Pages.Admin
                 }
             }
 
-            // Создаем новую игру
             var newGame = new Game
             {
                 Id = newGameId,
@@ -75,10 +70,8 @@ namespace kursovoy.Pages.Admin
                 SystemRequirements = SystemRequirements
             };
 
-            // Добавляем игру в список
             games.Add(newGame);
 
-            // Сохраняем обновленный список игр
             System.IO.File.WriteAllText(_gamesFilePath, JsonConvert.SerializeObject(games));
 
             return RedirectToPage("/Admin/Games");

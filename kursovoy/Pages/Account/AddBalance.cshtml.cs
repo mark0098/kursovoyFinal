@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
+using System.Linq;
 
 namespace kursovoy.Pages.Account
 {
@@ -36,56 +38,22 @@ namespace kursovoy.Pages.Account
 
         public IActionResult OnPost()
         {
-            if (!ModelState.IsValid)
-            {
-                return Page();
-            }
-
-            // Проверка данных карты (заглушка)
-            if (!IsCardValid(CardNumber, ExpiryDate, Cvv))
-            {
-                ModelState.AddModelError(string.Empty, "Неверные данные карты.");
-                return Page();
-            }
-
-            // Загружаем данные пользователя
-            var users = JsonConvert.DeserializeObject<List<User>>(System.IO.File.ReadAllText(_usersFilePath));
             var username = HttpContext.Session.GetString("Username");
-            var user = users.FirstOrDefault(u => u.Username == username);
-
-            if (user == null)
+            if (string.IsNullOrEmpty(username))
             {
                 return RedirectToPage("/Account/Login");
             }
 
-            // Пополнение баланса
-            user.Balance += Amount;
+            var users = JsonConvert.DeserializeObject<List<User>>(System.IO.File.ReadAllText(_usersFilePath));
+            var user = users.FirstOrDefault(u => u.Username == username);
 
-            // Сохраняем данные карты, если пользователь выбрал чек-бокс
-            if (SaveCard)
+            if (user != null)
             {
-                var cards = JsonConvert.DeserializeObject<List<Card>>(System.IO.File.ReadAllText(_cardsFilePath)) ?? new List<Card>();
-                cards.Add(new Card
-                {
-                    UserId = user.Id,
-                    CardNumber = CardNumber,
-                    ExpiryDate = ExpiryDate,
-                    Cvv = Cvv
-                });
-                System.IO.File.WriteAllText(_cardsFilePath, JsonConvert.SerializeObject(cards));
+                user.Balance += Amount;
+                System.IO.File.WriteAllText(_usersFilePath, JsonConvert.SerializeObject(users));
             }
 
-            // Сохраняем обновлённые данные пользователя
-            System.IO.File.WriteAllText(_usersFilePath, JsonConvert.SerializeObject(users));
-
             return RedirectToPage("/Store/Index");
-        }
-
-        private bool IsCardValid(string cardNumber, string expiryDate, string cvv)
-        {
-            // Заглушка для проверки данных карты
-            // В реальном приложении здесь будет интеграция с платежным шлюзом
-            return true;
         }
     }
 }

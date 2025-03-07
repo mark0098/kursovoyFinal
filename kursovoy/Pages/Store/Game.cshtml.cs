@@ -37,8 +37,7 @@ namespace kursovoy.Pages.Store
             {
                 return RedirectToPage("/Account/Login");
             }
-
-            // Загружаем список игр
+            \
             var games = JsonConvert.DeserializeObject<List<Game>>(System.IO.File.ReadAllText(_gamesFilePath));
             Game = games.FirstOrDefault(g => g.Id == id);
 
@@ -46,8 +45,7 @@ namespace kursovoy.Pages.Store
             {
                 return NotFound();
             }
-
-            // Проверяем, куплена ли игра
+            
             var users = JsonConvert.DeserializeObject<List<User>>(System.IO.File.ReadAllText(_usersFilePath));
             var user = users.FirstOrDefault(u => u.Username == username);
 
@@ -65,7 +63,6 @@ namespace kursovoy.Pages.Store
                 return RedirectToPage("/Account/Login");
             }
 
-            // Загружаем данные
             var users = JsonConvert.DeserializeObject<List<User>>(System.IO.File.ReadAllText(_usersFilePath));
             var user = users.FirstOrDefault(u => u.Username == username);
 
@@ -77,24 +74,18 @@ namespace kursovoy.Pages.Store
                 return NotFound();
             }
 
-            // Проверяем баланс
             if (user.Balance >= game.Price)
             {
-                // Списание средств
                 user.Balance -= game.Price;
 
-                // Добавляем покупку
                 var purchases = JsonConvert.DeserializeObject<List<Purchase>>(System.IO.File.ReadAllText(_purchasesFilePath)) ?? new List<Purchase>();
                 purchases.Add(new Purchase { UserId = user.Id, GameId = game.Id });
 
-                // Генерация ключа
                 var key = KeyGenerator.GenerateKey();
 
-                // Добавляем ключ в список
                 var gameKeys = JsonConvert.DeserializeObject<List<GameKey>>(System.IO.File.ReadAllText(_gameKeysFilePath)) ?? new List<GameKey>();
                 gameKeys.Add(new GameKey { UserId = user.Id, GameId = game.Id, Key = key });
 
-                // Сохраняем изменения
                 System.IO.File.WriteAllText(_usersFilePath, JsonConvert.SerializeObject(users));
                 System.IO.File.WriteAllText(_purchasesFilePath, JsonConvert.SerializeObject(purchases));
                 System.IO.File.WriteAllText(_gameKeysFilePath, JsonConvert.SerializeObject(gameKeys));
